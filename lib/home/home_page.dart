@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,8 +11,13 @@ import 'package:hacktu_care_frontend/components/custom_button.dart';
 import 'package:hacktu_care_frontend/components/loading_page.dart';
 import 'package:hacktu_care_frontend/constants/color_consts.dart';
 import 'package:hacktu_care_frontend/constants/spacing_consts.dart';
+import 'package:hacktu_care_frontend/constants/text_styles.dart';
 import 'package:hacktu_care_frontend/home/chatbot/chat_cubit.dart';
 import 'package:hacktu_care_frontend/home/chatbot/chat_screen.dart';
+import 'package:hacktu_care_frontend/home/community/community_cubit.dart';
+import 'package:hacktu_care_frontend/home/community/community_page.dart';
+import 'package:hacktu_care_frontend/home/prescriptions/prescriptions_page.dart';
+import 'package:hacktu_care_frontend/home/profile/profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,9 +31,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int currentPage = 0;
   bool isLoading = true;
+  String? userName;
+  String? userPfp;
   final PageController _controller = PageController(initialPage: 0);
 
-  List<Widget> pages = [];
+  List<Widget> pages = [
+    PrescriptionsPage(),
+    ChatScreen(),
+    CommunityPage(),
+    ProfilePage()
+  ];
 
   @override
   void initState() {
@@ -39,6 +52,7 @@ class _HomePageState extends State<HomePage> {
     final prefs = await SharedPreferences.getInstance();
     String? authToken = prefs.getString('authToken');
 
+    debugPrint("Auth token is : $authToken");
     String getCareGiverDataAPI =
         '${dotenv.env['TEST_BASE_URI']}/caregiver/get-caregiver-data';
 
@@ -47,8 +61,11 @@ class _HomePageState extends State<HomePage> {
       'authorization': 'bearer $authToken'
     });
 
-    debugPrint(json.decode(response.body).toString());
+    final decodedResponse = json.decode(response.body);
+
+    debugPrint(decodedResponse.toString());
     setState(() {
+      userName = decodedResponse['data']['caregiverData']['name'].toString();
       isLoading = false;
     });
   }
@@ -64,14 +81,14 @@ class _HomePageState extends State<HomePage> {
           surfaceTintColor: ColorConsts().primary,
           title: Row(
             children: [
-              // CircleAvatar(
-              //   backgroundImage: NetworkImage(profileImageUrl!),
-              // ),
+              const CircleAvatar(
+                backgroundImage: AssetImage('assets/placeholders/profile.png'),
+              ),
               SpacingConsts().smallWidthBetweenFields(context),
-              // AutoSizeText(
-              //   name!,
-              //   style: CustomTextStyles().regular(fontSize: 25),
-              // )
+              AutoSizeText(
+                userName!,
+                style: CustomTextStyles().regular(fontSize: 25),
+              )
             ],
           ),
           actions: [
@@ -121,7 +138,13 @@ class _HomePageState extends State<HomePage> {
         body: PageView(
           controller: _controller,
           children: [
-            BlocProvider(create: (context) => ChatCubit(), child: ChatScreen())
+            const PrescriptionsPage(),
+            BlocProvider(create: (context) => ChatCubit(), child: ChatScreen()),
+            BlocProvider(
+              create: (context) => CommunityCubit()..fetchPosts(),
+              child: CommunityPage(),
+            ),
+            const ProfilePage()
           ],
         ));
   }
