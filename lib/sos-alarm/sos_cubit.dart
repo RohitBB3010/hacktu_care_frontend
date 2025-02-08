@@ -57,8 +57,8 @@ class NotificationService {
       importance: Importance.max,
       priority: Priority.high,
       fullScreenIntent: true,
-      ongoing: true, // Prevent user from dismissing
-      sound: RawResourceAndroidNotificationSound('alarm'), // Play alert sound
+      ongoing: true,
+      sound: RawResourceAndroidNotificationSound('alarm'),
     );
 
     const NotificationDetails details =
