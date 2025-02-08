@@ -18,13 +18,19 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> _initialize() async {
-    emit(AuthLoadingState());
+    debugPrint("here");
+    //emit(AuthLoadingState());
     SharedPreferences prefs = await getSharedPrefsInstance();
 
     if (prefs.getBool('isPatient') == null) {
       emit(AuthInitalState());
     } else {
-      emit(SigninState());
+      debugPrint(prefs.getString('authToken'));
+      if (prefs.getString('authToken') == null) {
+        emit(SigninState());
+      } else {
+        emit(AuthenticatedState());
+      }
     }
   }
 

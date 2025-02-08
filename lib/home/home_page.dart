@@ -1,10 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hacktu_care_frontend/auth/auth_cubit.dart';
+import 'package:hacktu_care_frontend/auth/auth_state.dart';
+import 'package:hacktu_care_frontend/components/custom_button.dart';
 import 'package:hacktu_care_frontend/components/loading_page.dart';
 import 'package:hacktu_care_frontend/constants/color_consts.dart';
 import 'package:hacktu_care_frontend/constants/spacing_consts.dart';
 import 'package:hacktu_care_frontend/constants/text_styles.dart';
+import 'package:hacktu_care_frontend/home/chatbot/chat_cubit.dart';
+import 'package:hacktu_care_frontend/home/chatbot/chat_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,9 +36,6 @@ class _HomePageState extends State<HomePage> {
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      authToken = prefs.getString('token');
-      name = prefs.getString('fullName');
-      profileImageUrl = prefs.getString('profileImageUrl');
       isLoading = false;
     });
   }
@@ -48,20 +51,20 @@ class _HomePageState extends State<HomePage> {
           surfaceTintColor: ColorConsts().primary,
           title: Row(
             children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(profileImageUrl!),
-              ),
+              // CircleAvatar(
+              //   backgroundImage: NetworkImage(profileImageUrl!),
+              // ),
               SpacingConsts().smallWidthBetweenFields(context),
-              AutoSizeText(
-                name!,
-                style: CustomTextStyles().regular(fontSize: 25),
-              )
+              // AutoSizeText(
+              //   name!,
+              //   style: CustomTextStyles().regular(fontSize: 25),
+              // )
             ],
           ),
           actions: [
             BlocBuilder<AuthCubit, AuthState>(builder: (context, state) {
               return CustomButton(context, "Signout", Colors.red, () {
-                context.read<AuthCubit>().logUserOut();
+                //context.read<AuthCubit>().logUserOut();
               }, 0.2, 0.03, 10);
             }),
           ],
@@ -104,7 +107,9 @@ class _HomePageState extends State<HomePage> {
         ),
         body: PageView(
           controller: _controller,
-          children: [],
+          children: [
+            BlocProvider(create: (context) => ChatCubit(), child: ChatScreen())
+          ],
         ));
   }
 
