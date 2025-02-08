@@ -21,7 +21,6 @@ class ChatScreen extends StatelessWidget {
             Expanded(child:
                 BlocBuilder<ChatCubit, ChatState>(builder: (context, state) {
               if (state is ChatLoaded) {
-                debugPrint('builder called');
                 return Column(
                   children: [
                     Expanded(
@@ -46,7 +45,6 @@ class ChatScreen extends StatelessWidget {
                                           ? ColorConsts().accent
                                           : Colors.grey[300],
                                       borderRadius: BorderRadius.circular(8)),
-                                  //
                                   child: MarkdownBody(
                                     data: message.message,
                                     styleSheet: MarkdownStyleSheet(
