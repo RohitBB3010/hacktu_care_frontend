@@ -7,6 +7,8 @@ class AuthState {}
 
 class AuthInitalState extends AuthState {}
 
+class AuthLoadingState extends AuthState {}
+
 @CopyWith()
 class SigninState extends AuthState {
   String? email;

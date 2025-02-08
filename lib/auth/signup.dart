@@ -94,7 +94,7 @@ class SignupPage extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                               customSnackbar(
                                   SnackbarTexts().plsFillAllFields, null));
-                        } else {}
+                        }
                       }, null, null, null),
                       SpacingConsts().smallHeightBetweenFields(context),
                       Row(

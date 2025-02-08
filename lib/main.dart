@@ -1,13 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hacktu_care_frontend/auth/auth_cubit.dart';
 import 'package:hacktu_care_frontend/auth/auth_state.dart';
 import 'package:hacktu_care_frontend/auth/initial_page.dart';
 import 'package:hacktu_care_frontend/auth/signin.dart';
 import 'package:hacktu_care_frontend/auth/signup.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load();
   runApp(const MyApp());
 }
 

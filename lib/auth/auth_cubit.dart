@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hacktu_care_frontend/auth/auth_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,6 +18,7 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> _initialize() async {
+    emit(AuthLoadingState());
     SharedPreferences prefs = await getSharedPrefsInstance();
 
     if (prefs.getBool('isPatient') == null) {
@@ -35,7 +40,37 @@ class AuthCubit extends Cubit<AuthState> {
     emit(SigninState());
   }
 
-  Future<void> login(String email, String password) async {}
+  Future<void> login(String email, String password) async {
+    try {
+      String loginUserAPI = '${dotenv.env['TEST_BASE_URI']}/auth/login-user';
+
+      debugPrint(loginUserAPI);
+
+      final prefs = await getSharedPrefsInstance();
+      bool? isPatient = prefs.getBool('isPatient');
+
+      Map<String, dynamic> requestBody = {
+        'email': email,
+        'password': password,
+        'isPatient': isPatient
+      };
+
+      final response = await http.post(Uri.parse(loginUserAPI),
+          body: json.encode(requestBody),
+          headers: {'Content-type': 'application/json'});
+
+      debugPrint(response.statusCode.toString());
+      if (response.statusCode == 200) {
+        final decodedResponse = json.decode(response.body);
+        final prefs = await getSharedPrefsInstance();
+        prefs.setString('authToken', decodedResponse['token']);
+        debugPrint(prefs.getString('authToken'));
+        emit(AuthenticatedState());
+      }
+    } catch (err) {
+      //
+    }
+  }
 
   void signupEmailChanged(String value) {
     emit((state as SignupState).copyWith(email: value));

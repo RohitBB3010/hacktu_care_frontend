@@ -86,7 +86,7 @@ class SigninPage extends StatelessWidget {
                               customSnackbar(
                                   SnackbarTexts().plsFillAllFields, null));
                         } else {
-                          //authCubit.login(state.email!, state.password!);
+                          authCubit.login(state.email!, state.password!);
                         }
                       }, null, null, null),
                       SpacingConsts().smallHeightBetweenFields(context),
