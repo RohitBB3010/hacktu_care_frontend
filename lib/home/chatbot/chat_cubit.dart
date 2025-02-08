@@ -1,6 +1,6 @@
 import 'package:firebase_vertexai/firebase_vertexai.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hacktu_care_frontend/chatbot/chat_state.dart';
+import 'package:hacktu_care_frontend/home/chatbot/chat_state.dart';
 import 'package:hacktu_care_frontend/shared/models.dart';
 
 List<Message> messages = [

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hacktu_care_frontend/chatbot/chat_cubit.dart';
-import 'package:hacktu_care_frontend/chatbot/chat_state.dart';
-// import 'package:hacktu_care_frontend/consts/color_consts.dart';
-import 'package:hacktu_care_frontend/shared/models.dart';
+import 'package:hacktu_care_frontend/constants/color_consts.dart';
+import 'package:hacktu_care_frontend/home/chatbot/chat_cubit.dart';
+import 'package:hacktu_care_frontend/home/chatbot/chat_state.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ChatScreen extends StatelessWidget {
