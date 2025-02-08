@@ -78,6 +78,13 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> logoutUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('authToken');
+    prefs.remove('isPatient');
+    emit(AuthInitalState());
+  }
+
   void signupEmailChanged(String value) {
     emit((state as SignupState).copyWith(email: value));
   }

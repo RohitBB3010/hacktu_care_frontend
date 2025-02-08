@@ -1,6 +1,8 @@
-import 'package:auto_size_text/auto_size_text.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hacktu_care_frontend/auth/auth_cubit.dart';
 import 'package:hacktu_care_frontend/auth/auth_state.dart';
@@ -8,10 +10,10 @@ import 'package:hacktu_care_frontend/components/custom_button.dart';
 import 'package:hacktu_care_frontend/components/loading_page.dart';
 import 'package:hacktu_care_frontend/constants/color_consts.dart';
 import 'package:hacktu_care_frontend/constants/spacing_consts.dart';
-import 'package:hacktu_care_frontend/constants/text_styles.dart';
 import 'package:hacktu_care_frontend/home/chatbot/chat_cubit.dart';
 import 'package:hacktu_care_frontend/home/chatbot/chat_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,11 +32,22 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    getToken();
+    getBasicData();
   }
 
-  Future<String?> getToken() async {
+  Future<String?> getBasicData() async {
     final prefs = await SharedPreferences.getInstance();
+    String? authToken = prefs.getString('authToken');
+
+    String getCareGiverDataAPI =
+        '${dotenv.env['TEST_BASE_URI']}/caregiver/get-caregiver-data';
+
+    final response = await http.get(Uri.parse(getCareGiverDataAPI), headers: {
+      'Content-type': 'application/json',
+      'authorization': 'bearer $authToken'
+    });
+
+    debugPrint(json.decode(response.body).toString());
     setState(() {
       isLoading = false;
     });
@@ -64,7 +77,7 @@ class _HomePageState extends State<HomePage> {
           actions: [
             BlocBuilder<AuthCubit, AuthState>(builder: (context, state) {
               return CustomButton(context, "Signout", Colors.red, () {
-                //context.read<AuthCubit>().logUserOut();
+                context.read<AuthCubit>().logoutUser();
               }, 0.2, 0.03, 10);
             }),
           ],
