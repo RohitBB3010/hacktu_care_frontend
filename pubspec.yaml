@@ -1,50 +1,70 @@
 name: hacktu_care_frontend
 description: "A new Flutter project."
-publish_to: 'none' 
 
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
 environment:
   sdk: ^3.5.4
 
-
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
-  flutter_bloc: ^9.0.0
   firebase_core: ^3.10.1
-  firebase_auth: ^5.4.0
   copy_with_extension: ^6.0.1
   copy_with_extension_gen: ^6.0.0
+  flutter_bloc: ^9.0.0
   json_serializable: ^6.9.0
   build_runner: ^2.4.13
   auto_size_text: ^3.0.0
   intl: ^0.20.2
   file_picker: ^8.1.7
-  http: ^1.3.0
-  equatable: ^2.0.7
-  firebase_vertexai: ^1.1.1
   shared_preferences: ^2.4.0
   flutter_dotenv: ^5.2.1
+  http: ^1.3.0
+  firebase_storage: ^12.4.1
+  cupertino_icons: ^1.0.8
+  firebase_auth: ^5.4.0
+  equatable: ^2.0.7
+  firebase_vertexai: ^1.1.1
   flutter_markdown: ^0.7.5
   flutter_local_notifications: ^18.0.1
   firebase_messaging: ^15.2.2
   audioplayers: ^6.1.1
+  loading_indicator: ^3.1.1
+  font_awesome_flutter: ^10.8.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  
+ 
   flutter_lints: ^4.0.0
 
-
 flutter:
-  
-  uses-material-design: true
-  assets:
-    - assets/
 
- 
+  uses-material-design: true
+  
+  assets:
+    - .env
+    - assets/
+    - assets/placeholders/
+    - assets/initial_page_placeholders/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: fonts/Poppins-Regular.ttf
+    - family: PoppinsItalic
+      fonts:
+        - asset: fonts/Poppins-Italic.ttf
+    - family: PoppinsSemiBold
+      fonts:
+        - asset: fonts/Poppins-SemiBold.ttf

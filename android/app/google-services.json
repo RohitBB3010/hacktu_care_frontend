@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "559385348743",
+    "project_id": "medease-20358",
+    "storage_bucket": "medease-20358.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559385348743:android:9edd52605c1c9520938622",
+        "android_client_info": {
+          "package_name": "com.example.hacktu_care_frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1HhXI3WHf1QqZU4AaUnwu9x-4MUAUU5k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559385348743:android:1619a3c1c97f9cec938622",
+        "android_client_info": {
+          "package_name": "com.example.medease_frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1HhXI3WHf1QqZU4AaUnwu9x-4MUAUU5k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
