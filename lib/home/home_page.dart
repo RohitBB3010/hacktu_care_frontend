@@ -36,8 +36,15 @@ class _HomePageState extends State<HomePage> {
   bool isLoading = true;
   String? userName;
   String? userPfp;
+  List<dynamic> patientData = [];
   final PageController _controller = PageController(initialPage: 0);
-  late List<PatientData> patients;
+
+  List<Widget> pages = [
+    PrescriptionsPage(),
+    ChatScreen(),
+    CommunityPage(),
+    ProfilePage()
+  ];
 
   @override
   void initState() {
@@ -61,17 +68,10 @@ class _HomePageState extends State<HomePage> {
     final decodedResponse = json.decode(response.body);
 
     debugPrint(decodedResponse.toString());
-    patients = [];
-
-    for (var patientData in decodedResponse['data']['patientData']) {
-      PatientData data = PatientData.fromJson(patientData);
-      patients.add(data);
-    }
-
-    debugPrint(patients.toString());
     setState(() {
       userName = decodedResponse['data']['caregiverData']['name'].toString();
       isLoading = false;
+      patientData = decodedResponse['data']['patientData'];
     });
   }
 
@@ -80,88 +80,80 @@ class _HomePageState extends State<HomePage> {
     if (isLoading) {
       return const LoadingPage();
     }
-    return BlocProvider(
-      create: (context) => PrescriptionsCubit()..printStuff(),
-      child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color.fromARGB(255, 188, 215, 238),
-            title: Row(
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: ColorConsts().primary,
+          surfaceTintColor: ColorConsts().primary,
+          title: Row(
+            children: [
+              const CircleAvatar(
+                backgroundImage: AssetImage('assets/placeholders/profile.png'),
+              ),
+              SpacingConsts().smallWidthBetweenFields(context),
+              AutoSizeText(
+                userName!,
+                style: CustomTextStyles().regular(fontSize: 25),
+              )
+            ],
+          ),
+          actions: [
+            BlocBuilder<AuthCubit, AuthState>(builder: (context, state) {
+              return CustomButton(context, "Signout", Colors.red, () {
+                context.read<AuthCubit>().logoutUser();
+              }, 0.2, 0.03, 10);
+            }),
+          ],
+        ),
+        bottomNavigationBar: Container(
+          height: MediaQuery.of(context).size.height * 0.06,
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.02,
+            vertical: MediaQuery.of(context).size.height * 0.005,
+          ),
+          margin: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * 0.05,
+              right: MediaQuery.of(context).size.width * 0.05,
+              bottom: MediaQuery.of(context).size.width * 0.02,
+              top: 0),
+          decoration: BoxDecoration(
+              color: ColorConsts().accent,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                    color: ColorConsts().secondary.withOpacity(0.4),
+                    offset: const Offset(0, 20),
+                    spreadRadius: 10,
+                    blurRadius: 25)
+              ]),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.07,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const CircleAvatar(
-                  backgroundImage:
-                      AssetImage('assets/placeholders/profile.png'),
-                ),
-                SpacingConsts().smallWidthBetweenFields(context),
-                AutoSizeText(
-                  userName!,
-                  style: CustomTextStyles().regular(fontSize: 25),
-                )
+                buildIcon(currentPage, FontAwesomeIcons.prescription, 0),
+                buildIcon(currentPage, FontAwesomeIcons.comment, 1),
+                buildIcon(currentPage, FontAwesomeIcons.pills, 2),
+                buildIcon(currentPage, FontAwesomeIcons.user, 3)
               ],
             ),
-            actions: [
-              BlocBuilder<AuthCubit, AuthState>(builder: (context, state) {
-                return TextButton(
-                    onPressed: () {
-                      context.read<AuthCubit>().logoutUser();
-                    },
-                    child: const AutoSizeText(
-                      'Logout',
-                      style:
-                          TextStyle(fontFamily: 'Poppins', color: Colors.red),
-                    ));
-              }),
-            ],
           ),
-          bottomNavigationBar: Container(
-            height: MediaQuery.of(context).size.height * 0.06,
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.02,
-              vertical: MediaQuery.of(context).size.height * 0.005,
+        ),
+        body: PageView(
+          controller: _controller,
+          children: [
+            const PrescriptionsPage(),
+            BlocProvider(
+                create: (context) => ChatCubit()..fetchInitialData(patientData),
+                child: ChatScreen(patientData: patientData)),
+            BlocProvider(
+              create: (context) => CommunityCubit()..fetchPosts(),
+              child: CommunityPage(),
             ),
-            margin: EdgeInsets.only(
-                left: MediaQuery.of(context).size.width * 0.05,
-                right: MediaQuery.of(context).size.width * 0.05,
-                bottom: MediaQuery.of(context).size.width * 0.02,
-                top: 0),
-            decoration: BoxDecoration(
-                color: ColorConsts().accent,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                      color: ColorConsts().secondary.withOpacity(0.4),
-                      offset: const Offset(0, 20),
-                      spreadRadius: 10,
-                      blurRadius: 25)
-                ]),
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.07,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  buildIcon(currentPage, FontAwesomeIcons.comment, 0),
-                  buildIcon(currentPage, FontAwesomeIcons.prescription, 1),
-                  buildIcon(currentPage, FontAwesomeIcons.pills, 2),
-                  buildIcon(currentPage, FontAwesomeIcons.user, 3)
-                ],
-              ),
-            ),
-          ),
-          body: PageView(
-            controller: _controller,
-            children: [
-              BlocProvider(
-                  create: (context) => ChatCubit(), child: ChatScreen()),
-              PrescriptionsPage(),
-              BlocProvider(
-                create: (context) => CommunityCubit()..fetchPosts(),
-                child: CommunityPage(),
-              ),
-              const ProfilePage()
-            ],
-          )),
-    );
+            const ProfilePage()
+          ],
+        ));
   }
 
   Widget buildIcon(int selectedIndex, IconData icon, int iconIndex) {
