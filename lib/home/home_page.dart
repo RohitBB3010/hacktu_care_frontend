@@ -33,11 +33,12 @@ class _HomePageState extends State<HomePage> {
   bool isLoading = true;
   String? userName;
   String? userPfp;
+  List<dynamic> patientData = [];
   final PageController _controller = PageController(initialPage: 0);
 
   List<Widget> pages = [
     PrescriptionsPage(),
-    ChatScreen(),
+    ChatScreen(patientData: []),
     CommunityPage(),
     ProfilePage()
   ];
@@ -64,9 +65,11 @@ class _HomePageState extends State<HomePage> {
     final decodedResponse = json.decode(response.body);
 
     debugPrint(decodedResponse.toString());
+
     setState(() {
       userName = decodedResponse['data']['caregiverData']['name'].toString();
       isLoading = false;
+      patientData = decodedResponse['data']['patientData'];
     });
   }
 
@@ -139,7 +142,9 @@ class _HomePageState extends State<HomePage> {
           controller: _controller,
           children: [
             const PrescriptionsPage(),
-            BlocProvider(create: (context) => ChatCubit(), child: ChatScreen()),
+            BlocProvider(
+                create: (context) => ChatCubit()..fetchInitialData(patientData),
+                child: ChatScreen(patientData: patientData)),
             BlocProvider(
               create: (context) => CommunityCubit()..fetchPosts(),
               child: CommunityPage(),

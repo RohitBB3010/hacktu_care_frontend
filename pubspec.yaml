@@ -51,7 +51,6 @@ flutter:
     - .env
     - assets/
     - assets/placeholders/
-    - assets/initial_page_placeholders/
 
   fonts:
     - family: Poppins

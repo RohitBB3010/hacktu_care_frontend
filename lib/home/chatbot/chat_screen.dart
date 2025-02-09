@@ -6,6 +6,9 @@ import 'package:hacktu_care_frontend/home/chatbot/chat_state.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ChatScreen extends StatelessWidget {
+  ChatScreen({super.key, required this.patientData});
+
+  final List<dynamic> patientData;
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -20,59 +23,100 @@ class ChatScreen extends StatelessWidget {
             Expanded(child:
                 BlocBuilder<ChatCubit, ChatState>(builder: (context, state) {
               if (state is ChatLoaded) {
-                return Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                          itemCount: state.messages.length,
-                          itemBuilder: (context, index) {
-                            final message = state.messages[index];
-                            final isUser = message.role == 'user';
-
-                            return Align(
-                              alignment: isUser
-                                  ? Alignment.centerRight
-                                  : Alignment.centerLeft,
-                              child: Container(
-                                  margin: const EdgeInsets.symmetric(
-                                    vertical: 4.0,
-                                    horizontal: 8.0,
-                                  ),
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                      color: isUser
-                                          ? ColorConsts().accent
-                                          : Colors.grey[300],
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: MarkdownBody(
-                                    data: message.message,
-                                    styleSheet: MarkdownStyleSheet(
-                                      p: TextStyle(
-                                          fontSize: 16,
-                                          color: isUser
-                                              ? Colors.white
-                                              : Colors.black),
-                                    ),
-                                  )),
-                            );
-                          }),
-                    ),
-                    if (state.isLoading)
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
-                            width: 60,
-                            margin: const EdgeInsets.symmetric(
-                              vertical: 4.0,
-                              horizontal: 8.0,
-                            ),
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                borderRadius: BorderRadius.circular(8)),
-                            child: LoadingDots()),
-                      )
-                  ],
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 4.0,
+                            horizontal: 8.0,
+                          ),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Text(
+                            'Hello, I am Salus! Select the person you want to chat for today.',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: patientData.length,
+                          itemBuilder: (context, index) {
+                            final patient = patientData[index];
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    patient['profile_pic_url'] ?? ''),
+                              ),
+                              title: Text(patient['name'] ?? ''),
+                              onTap: () {
+                                debugPrint('patient name - ${patient['name']}');
+                                context.read<ChatCubit>().selectPatient(
+                                    patient['name'], patient['disability']);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: state.messages.length,
+                            itemBuilder: (context, index) {
+                              final message = state.messages[index];
+                              final isUser = message.role == 'user';
+
+                              return Align(
+                                alignment: isUser
+                                    ? Alignment.centerRight
+                                    : Alignment.centerLeft,
+                                child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 4.0,
+                                      horizontal: 8.0,
+                                    ),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                        color: isUser
+                                            ? ColorConsts().accent
+                                            : Colors.grey[300],
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: MarkdownBody(
+                                      data: message.message,
+                                      styleSheet: MarkdownStyleSheet(
+                                        p: TextStyle(
+                                            fontSize: 16,
+                                            color: isUser
+                                                ? Colors.white
+                                                : Colors.black),
+                                      ),
+                                    )),
+                              );
+                            }),
+                      ),
+                      if (state.isLoading)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                              width: 60,
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 4.0,
+                                horizontal: 8.0,
+                              ),
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: LoadingDots()),
+                        )
+                    ],
+                  ),
                 );
               } else if (state is ChatLoading) {
                 return const Center(child: CircularProgressIndicator());
