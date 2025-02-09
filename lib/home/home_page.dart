@@ -140,8 +140,8 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  buildIcon(currentPage, FontAwesomeIcons.prescription, 0),
-                  buildIcon(currentPage, FontAwesomeIcons.comment, 1),
+                  buildIcon(currentPage, FontAwesomeIcons.comment, 0),
+                  buildIcon(currentPage, FontAwesomeIcons.prescription, 1),
                   buildIcon(currentPage, FontAwesomeIcons.pills, 2),
                   buildIcon(currentPage, FontAwesomeIcons.user, 3)
                 ],
@@ -153,10 +153,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               BlocProvider(
                   create: (context) => ChatCubit(), child: ChatScreen()),
-              BlocProvider(
-                  create: (context) => PrescriptionsCubit()..printStuff(),
-                  child: PrescriptionsPage(patients: patients)),
-              PrescriptionsPage(patients: patients),
+              PrescriptionsPage(),
               BlocProvider(
                 create: (context) => CommunityCubit()..fetchPosts(),
                 child: CommunityPage(),

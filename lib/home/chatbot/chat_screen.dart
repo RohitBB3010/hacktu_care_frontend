@@ -13,7 +13,10 @@ class ChatScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Salus'),
+          backgroundColor: const Color.fromARGB(255, 188, 215, 238),
+          title: const Text(
+            'Salus',
+          ),
         ),
         body: Column(
           children: [
