@@ -34,10 +34,10 @@ class CommunityCubit extends Cubit<CommunityState> {
       if (response.statusCode == 200) {
         List<Post> posts = [];
         final decodedResponse = jsonDecode(response.body);
-        debugPrint(decodedResponse.toString());
-        for (var postObject in decodedResponse['posts']) {
-          debugPrint("Post Object Type: ${postObject.runtimeType}");
-          debugPrint("Post Object Data: ${jsonEncode(postObject)}");
+        debugPrint(decodedResponse.keys.toString());
+        for (var postObject in decodedResponse['postData']) {
+          Post post = Post.fromJson(postObject);
+          posts.add(post);
         }
 
         debugPrint(posts.length.toString());

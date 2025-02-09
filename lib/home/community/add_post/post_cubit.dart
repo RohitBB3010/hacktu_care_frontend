@@ -17,6 +17,10 @@ class PostCubit extends Cubit<AddPostState> {
       String title, String postBody, String tag, PlatformFile? image) async {
     String addPostUri = '${dotenv.env['TEST_BASE_URI']}/forum/add-post';
 
+    if (image != null) {
+      //final storageRef = await Firebase
+    }
+
     Map<String, dynamic> requestBody = {
       'title': title,
       'postBody': postBody,

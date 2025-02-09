@@ -65,3 +65,18 @@ extension $MessageCopyWith on Message {
   // ignore: library_private_types_in_public_api
   _$MessageCWProxy get copyWith => _$MessageCWProxyImpl(this);
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+PatientData _$PatientDataFromJson(Map<String, dynamic> json) => PatientData(
+      name: json['name'] as String,
+      id: json['_id'] as String,
+    );
+
+Map<String, dynamic> _$PatientDataToJson(PatientData instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      '_id': instance.id,
+    };

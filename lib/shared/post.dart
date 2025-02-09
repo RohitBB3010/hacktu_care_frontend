@@ -4,7 +4,7 @@ part 'post.g.dart';
 
 @JsonSerializable()
 class Post {
-  @JsonKey(name: '_id')
+  @JsonKey(name: 'postId')
   String id;
   String title;
   String postBody;
